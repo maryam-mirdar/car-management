@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+          
+  
+  
+  <modelVersion>4.0.0</modelVersion>
+          
+  
+  
+  <groupId>org.mirdar</groupId>
+          
+  
+  
+  <artifactId>car</artifactId>
+          
+  
+  
+  <version>1.0-SNAPSHOT</version>
+          
+  
+  
+  <packaging>pom</packaging>
+          
+  
+  
+  <name>car-web-starter</name>
+          
+  
+  
+  <properties>
+                    
+    
+    
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+                    
+    
+    
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+                    
+    
+    
+    <java.version>1.8</java.version>
+                    
+    
+    
+    <ibit.common-lang.version>1.0</ibit.common-lang.version>
+                    
+    
+    
+    <jackson.version>2.10.1</jackson.version>
+                    
+    
+    
+    <junit.version>4.13.1</junit.version>
+                    
+    
+    
+    <springfox-swagger2.version>2.9.2</springfox-swagger2.version>
+                    
+    
+    
+    <swagger-bootstrap-ui.version>1.9.6</swagger-bootstrap-ui.version>
+                
+  
+  
+  </properties>
+          
+  
+  
+  <dependencies>
+                    
+    
+    
+    <dependency>
+                              
+      
+      
+      <groupId>junit</groupId>
+                              
+      
+      
+      <artifactId>junit</artifactId>
+                              
+      
+      
+      <version>${junit.version}</version>
+                              
+      
+      
+      <scope>test</scope>
+                          
+    
+    
+    </dependency>
+                    
+    
+    
+    <!--ibit common-lang-->
+                    
+    
+    
+    <dependency>
+                              
+      
+      
+      <groupId>tech.ibit</groupId>
+                              
+      
+      
+      <artifactId>common-lang</artifactId>
+                              
+      
+      
+      <version>${ibit.common-lang.version}</version>
+                          
+    
+    
+    </dependency>
+                    
+    
+    
+    <!--jackson-->
+                    
+    
+    
+    <dependency>
+                              
+      
+      
+      <groupId>com.fasterxml.jackson.core</groupId>
+                              
+      
+      
+      <artifactId>jackson-core</artifactId>
+                              
+      
+      
+      <version>${jackson.version}</version>
+                          
+    
+    
+    </dependency>
+                    
+    
+    
+    <dependency>
+                              
+      
+      
+      <groupId>com.fasterxml.jackson.core</groupId>
+                              
+      
+      
+      <artifactId>jackson-databind</artifactId>
+                              
+      
+      
+      <version>${jackson.version}</version>
+                          
+    
+    
+    </dependency>
+                    
+    
+    
+    <!--  swagger  -->
+                    
+    
+    
+    <dependency>
+                              
+      
+      
+      <groupId>io.springfox</groupId>
+                              
+      
+      
+      <artifactId>springfox-swagger2</artifactId>
+                              
+      
+      
+      <version>${springfox-swagger2.version}</version>
+                          
+    
+    
+    </dependency>
+                    
+    
+    
+    <dependency>
+                              
+      
+      
+      <groupId>com.github.xiaoymin</groupId>
+                              
+      
+      
+      <artifactId>swagger-bootstrap-ui</artifactId>
+                              
+      
+      
+      <version>${swagger-bootstrap-ui.version}</version>
+                          
+    
+    
+    </dependency>
+                
+  
+  
+  </dependencies>
+      
+  
+  
+  <modules>
+    <module>car-api</module>
+  </modules>
+    
+
+</project>

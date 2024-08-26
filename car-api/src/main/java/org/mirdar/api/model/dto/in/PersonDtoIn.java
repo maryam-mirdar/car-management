@@ -1,9 +1,9 @@
-package org.mirdar.api.model.dto;
+package org.mirdar.api.model.dto.in;
 
 import lombok.Data;
 
 @Data
-public class PersonDTO {
+public class PersonDtoIn {
     private String firstName;
     private String lastName;
     private String nationalCode;

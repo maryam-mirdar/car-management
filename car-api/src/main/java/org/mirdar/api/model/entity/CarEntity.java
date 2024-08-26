@@ -1,25 +1,27 @@
 package org.mirdar.api.model.entity;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "car")
-@Data
-public class Car {
+@Getter
+@Setter
+public class CarEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "Id")
     private Long id;
 
-    @Column(name = "model")
+    @Column
     private String model;
 
-    @Column(name = "license_plate", unique = true)
+    @Column(unique = true)
     private String licensePlate;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "person_id")
-    private Person person;
+    private PersonEntity person;
 }

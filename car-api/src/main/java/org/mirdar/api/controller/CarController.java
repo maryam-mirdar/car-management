@@ -27,13 +27,13 @@ public class CarController {
     }
 
     @PostMapping()
-    public CarDtoOut add(@RequestBody CarDtoIn carDTO) {
-        return carService.save(carDTO);
+    public void add(@RequestBody CarDtoIn carDTO) {
+        carService.save(carDTO);
     }
 
     @PostMapping("/{id}")
-    public CarDtoOut update(@PathVariable("id") Long id, @RequestBody CarDtoIn updatedCarDTO) {
-        return carService.update(id, updatedCarDTO);
+    public void update(@PathVariable("id") Long id, @RequestBody CarDtoIn updatedCarDTO) {
+        carService.update(id, updatedCarDTO);
     }
 
     @PostMapping("/{id}/delete")

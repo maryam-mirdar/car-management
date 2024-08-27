@@ -1,6 +1,6 @@
 package org.mirdar.api.service;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.mirdar.api.exception.CannotBeCreatedWithOutAnOwnerException;
 import org.mirdar.api.exception.DuplicateLicensePlateException;
 import org.mirdar.api.exception.NoSuchEntityExistsException;
@@ -10,7 +10,6 @@ import org.mirdar.api.model.dto.out.CarDtoOut;
 import org.mirdar.api.model.entity.CarEntity;
 import org.mirdar.api.model.entity.PersonEntity;
 import org.mirdar.api.repository.CarRepository;
-import org.mirdar.api.repository.PersonRepository;
 import org.mirdar.api.util.SortUtil;
 import org.mirdar.api.validation.CarLicenseValidation;
 import org.springframework.data.domain.Sort;
@@ -21,10 +20,11 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class CarService {
     private final CarRepository carRepository;
     private final PersonService personService;
+
     public List<CarDtoOut> getAllCars() {
         List<CarEntity> carEntities = carRepository.findAll();
         return carEntities.stream()
@@ -33,11 +33,11 @@ public class CarService {
     }
 
     public CarDtoOut getCarById(long id) {
-        CarEntity carEntity = carRepository.findById(id).orElseThrow(() -> new NoSuchEntityExistsException("Car", id));
+        CarEntity carEntity = carRepository.findByIdWithPerson(id).orElseThrow(() -> new NoSuchEntityExistsException("Car", id));
         return new CarDtoOut(carEntity);
     }
 
-    public CarDtoOut save(CarDtoIn carDtoIn) {
+    public void save(CarDtoIn carDtoIn) {
         CarEntity carEntity = new CarEntity();
         if (carDtoIn.getPersonId() == null) {
             throw new CannotBeCreatedWithOutAnOwnerException();
@@ -53,11 +53,10 @@ public class CarService {
         }
         carEntity.setLicensePlate(licensePlate);
         carEntity.setModel(carDtoIn.getModel());
-        CarEntity savedCar = carRepository.save(carEntity);
-        return new CarDtoOut(savedCar);
+        carRepository.save(carEntity);
     }
 
-    public CarDtoOut update(long id, CarDtoIn carDtoIn) {
+    public void update(long id, CarDtoIn carDtoIn) {
         CarEntity carEntity = carRepository.findById(id).orElseThrow(() -> new NoSuchEntityExistsException("Car", id));
         carEntity.setModel(Optional.ofNullable(carDtoIn.getModel()).orElse(carEntity.getModel()));
         if (carDtoIn.getLicensePlate() != null) {
@@ -74,8 +73,7 @@ public class CarService {
             PersonEntity personEntity = personService.getPersonEntityById(carDtoIn.getPersonId());
             carEntity.setPerson(personEntity);
         }
-        CarEntity updatedCar = carRepository.save(carEntity);
-        return new CarDtoOut(updatedCar);
+        carRepository.save(carEntity);
     }
 
     public void delete(long id) {

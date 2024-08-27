@@ -27,13 +27,13 @@ public class PersonController {
     }
 
     @PostMapping()
-    public PersonDtoOut add(@RequestBody PersonDtoIn personDTO) {
-        return personService.save(personDTO);
+    public void add(@RequestBody PersonDtoIn personDTO) {
+        personService.save(personDTO);
     }
 
     @PostMapping("/{id}")
-    public PersonDtoOut update(@PathVariable("id") Long id, @RequestBody PersonDtoIn personDTO) {
-        return personService.update(id, personDTO);
+    public void update(@PathVariable("id") Long id, @RequestBody PersonDtoIn personDTO) {
+        personService.update(id, personDTO);
     }
 
     @PostMapping("/{id}/delete")

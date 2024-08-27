@@ -26,6 +26,7 @@ import java.util.stream.Collectors;
 public class PersonService {
     private final PersonRepository personRepository;
     private final CarService carService;
+
     public List<PersonDtoOut> getAllPersons() {
         List<PersonEntity> personEntities = personRepository.findAll();
         return personEntities.stream()
@@ -38,7 +39,7 @@ public class PersonService {
         return new PersonDtoOut(personEntity);
     }
 
-    public PersonDtoOut save(PersonDtoIn personDtoIn) {
+    public void save(PersonDtoIn personDtoIn) {
         PersonEntity personEntity = new PersonEntity();
         personEntity.setFirstName(personDtoIn.getFirstName());
         personEntity.setLastName(personDtoIn.getLastName());
@@ -50,16 +51,14 @@ public class PersonService {
             throw new DuplicateNationalCodeException(code);
         }
         personEntity.setNationalCode(code);
-        PersonEntity savedPerson = personRepository.save(personEntity);
-        return new PersonDtoOut(savedPerson);
+        personRepository.save(personEntity);
     }
 
-    public PersonDtoOut update(long id, PersonDtoIn personDtoIn) {
+    public void update(long id, PersonDtoIn personDtoIn) {
         PersonEntity personEntity = personRepository.findById(id).orElseThrow(() -> new NoSuchEntityExistsException("Person", id));
         personEntity.setFirstName(Optional.ofNullable(personDtoIn.getFirstName()).orElse(personEntity.getFirstName()));
         personEntity.setLastName(Optional.ofNullable(personDtoIn.getLastName()).orElse(personEntity.getLastName()));
-        PersonEntity updatedPerson = personRepository.save(personEntity);
-        return new PersonDtoOut(updatedPerson);
+        personRepository.save(personEntity);
     }
 
     public void delete(long id) {

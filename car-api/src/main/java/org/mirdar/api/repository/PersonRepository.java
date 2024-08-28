@@ -11,6 +11,7 @@ public interface PersonRepository extends JpaRepository<PersonEntity, Long> {
 
     boolean existsByNationalCode(String nationalCode);
 
-    @Query("select p from PersonEntity p where p.firstName like concat('%',?1,'%')and p.lastName like concat('%',?2,'%' ) ")
+    @Query("select p from PersonEntity p where p.firstName like concat('%', :firstNameFilter,'%')" +
+            "and p.lastName like concat('%', :lastNameFilter,'%' ) ")
     List<PersonEntity> findByFirstNameLikeAndLastNameLike(String firstNameFilter, String lastNameFilter, Sort sort);
 }

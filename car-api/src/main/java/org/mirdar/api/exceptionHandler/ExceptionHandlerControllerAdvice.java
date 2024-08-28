@@ -27,4 +27,14 @@ public class ExceptionHandlerControllerAdvice {
                 .build();
         return new ResponseEntity<>(adviceResponse, HttpStatus.NOT_FOUND);
     }
+
+    @ExceptionHandler({CustomException.class})
+    public ResponseEntity<AdviceResponse> handelMyCustomExceptions(CustomException ex) {
+        AdviceResponse adviceResponse = AdviceResponse.builder()
+                .message(ex.getMessage())
+                .status(ex.getStatus().getReasonPhrase())
+                .code(ex.getCode())
+                .build();
+        return new ResponseEntity<>(adviceResponse, ex.getStatus());
+    }
 }

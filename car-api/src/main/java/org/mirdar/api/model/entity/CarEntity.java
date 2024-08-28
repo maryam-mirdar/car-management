@@ -18,13 +18,16 @@ public class CarEntity {
     @Column(name = "Id")
     private Long id;
 
-    @Column
+    @Column(nullable = false)
     private String model;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String licensePlate;
 
+    @Column(name = "person_id", nullable = false)
+    private Long personId;
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "person_id")
+    @JoinColumn(name = "person_id", insertable = false, updatable = false)
     private PersonEntity person;
 }

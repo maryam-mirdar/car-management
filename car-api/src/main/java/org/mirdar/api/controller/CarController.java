@@ -1,7 +1,9 @@
 package org.mirdar.api.controller;
 
+import com.mwga.common.shared.util.PaginatedOut;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import org.mirdar.api.model.dto.CarFilter;
 import org.mirdar.api.model.dto.in.CarDtoIn;
 import org.mirdar.api.model.dto.in.CarUpdateIn;
 import org.mirdar.api.model.dto.out.CarDtoOut;
@@ -23,13 +25,13 @@ public class CarController {
 
     @GetMapping()
     @ResponseStatus(HttpStatus.OK)
-    public List<CarDtoOut> getAllCars() {
-        return carService.getAllCars();
+    public List<CarDtoOut> getAllCars(CarFilter filter) {
+        return carService.getAllCars(filter);
     }
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public CarDtoOut getCarById(@PathVariable("id") Long id) {
+    public CarDtoOut getCarById(@PathVariable("id") @Valid Long id) {
         return carService.getCarById(id);
     }
 

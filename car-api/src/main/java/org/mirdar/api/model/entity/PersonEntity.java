@@ -1,5 +1,6 @@
 package org.mirdar.api.model.entity;
 
+import com.mwga.common.database.common.BaseMasterEntity;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,12 +11,7 @@ import java.util.List;
 @Table(name = "person")
 @Getter
 @Setter
-public class PersonEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "Id")
-    private Long id;
-
+public class PersonEntity extends BaseMasterEntity {
     @Column(nullable = false)
     private String firstName;
 

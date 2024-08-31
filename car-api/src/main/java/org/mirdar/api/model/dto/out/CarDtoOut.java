@@ -8,7 +8,7 @@ import org.mirdar.api.model.entity.CarEntity;
 @Getter
 @Setter
 public class CarDtoOut {
-    private Long id;
+    private String id;
     private String model;
     private String licensePlate;
     private Long personId;

@@ -1,7 +1,12 @@
 package org.mirdar.api.service;
 
+import com.mwga.common.shared.util.PaginatedOut;
+import com.mwga.storage.orm.jpa.GenericFilterableService;
+import com.mwga.storage.orm.model.SearchCondition;
+import com.mwga.storage.orm.model.SearchFilter;
 import lombok.RequiredArgsConstructor;
 import org.mirdar.api.exception.CustomException;
+import org.mirdar.api.model.dto.CarFilter;
 import org.mirdar.api.model.dto.in.CarDtoIn;
 import org.mirdar.api.model.dto.in.CarUpdateIn;
 import org.mirdar.api.model.dto.out.CarDtoOut;
@@ -19,26 +24,17 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class CarService {
+public class CarService extends GenericFilterableService<CarEntity, CarFilter> {
     private final CarRepository carRepository;
 
-    public List<CarDtoOut> getAllCars() {
-        List<CarEntity> carEntities = carRepository.findAll();
-        return carEntities.stream()
+    public List<CarDtoOut> getAllCars(CarFilter filter) {
+        return getAllEntities(filter, new String[]{"person"}).stream()
                 .map(CarDtoOut::new)
                 .collect(Collectors.toList());
     }
 
-    public CarEntity findPersonByIdOrThrow(Long id) {
-        return carRepository.findById(id)
-                .orElseThrow(() -> new CustomException("Car with id = " + id + " does not exist.",
-                        HttpStatus.NOT_FOUND, "50260"));
-    }
-
     public CarDtoOut getCarById(long id) {
-        CarEntity carEntity = carRepository.findByIdWithPerson(id)
-                .orElseThrow(() -> new CustomException("Car with id = " + id + " does not exist.",
-                        HttpStatus.NOT_FOUND, "50261"));
+        CarEntity carEntity = getEntityById(id , new String[]{"person"});
         return new CarDtoOut(carEntity);
     }
 
@@ -49,11 +45,12 @@ public class CarService {
         }
         validateLicensePlate(carDtoIn.getLicensePlate());
         checkDuplicateLicensePlate(carDtoIn.getLicensePlate(), null);
-        carRepository.save(carEntity);
+        createEntity(carEntity);
+       // carRepository.save(carEntity);
     }
 
     public void update(long id, CarUpdateIn carUpdateIn) {
-        CarEntity carEntity = findPersonByIdOrThrow(id);
+        CarEntity carEntity = getEntityById(id , null);
         if (carUpdateIn.getLicensePlate() != null) {
             validateLicensePlate(carUpdateIn.getLicensePlate());
             checkDuplicateLicensePlate(carUpdateIn.getLicensePlate(), carEntity.getLicensePlate());
@@ -61,12 +58,14 @@ public class CarService {
         }
         carEntity.setModel(Optional.ofNullable(carUpdateIn.getModel()).orElse(carEntity.getModel()));
         carEntity.setPersonId(Optional.ofNullable(carUpdateIn.getPersonId()).orElse(carEntity.getPersonId()));
-        carRepository.save(carEntity);
+        updateEntity(carEntity);
+       // carRepository.save(carEntity);
     }
 
     public void delete(long id) {
-        findPersonByIdOrThrow(id);
-        carRepository.deleteById(id);
+        getEntityById(id , null);
+        //carRepository.deleteById(id);
+        deleteEntityById(id);
     }
 
     public List<CarDtoOut> fetchCarDataWithFilteringAndSorting(String modelFilter,
@@ -95,7 +94,22 @@ public class CarService {
         return carRepository.findByPersonId(personId);
     }
 
-    public boolean existsByLicensePlate(String licensePlate){
+    public boolean existsByLicensePlate(String licensePlate) {
         return carRepository.existsByLicensePlate(licensePlate);
+    }
+
+    @Override
+    public SearchFilter filterChain(CarFilter filter) {
+        SearchFilter searchFilter = new SearchFilter();
+        setPagination(filter, searchFilter);
+        searchFilter.setSortCriteria(filter.getSortList());
+        searchFilter.setDistinct(filter.isDistinct());
+        SearchCondition searchCondition = new SearchCondition();
+        searchCondition.addEqualCondition("id", filter.getId());
+        searchCondition.addLikeCondition("model", filter.getModel());
+        searchCondition.addLikeCondition("licensePlate", filter.getLicensePlate());
+        searchCondition.addEqualCondition("personId", filter.getPersonId());
+        searchFilter.setSearchCondition(searchCondition);
+        return searchFilter;
     }
 }

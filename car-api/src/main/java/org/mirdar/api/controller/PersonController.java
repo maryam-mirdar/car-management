@@ -2,6 +2,7 @@ package org.mirdar.api.controller;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import org.mirdar.api.model.dto.PersonFilter;
 import org.mirdar.api.model.dto.in.PersonDtoIn;
 import org.mirdar.api.model.dto.in.PersonNewDtoIn;
 import org.mirdar.api.model.dto.in.PersonUpdateIn;
@@ -23,8 +24,8 @@ public class PersonController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<PersonDtoOut> getAllPersons() {
-        return personService.getAllPersons();
+    public List<PersonDtoOut> getAllPersons(PersonFilter filter) {
+        return personService.getAllPersons(filter);
     }
 
     @GetMapping("/{id}")

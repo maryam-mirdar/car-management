@@ -1,9 +1,16 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
-
     <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.mwga.infrastructure</groupId>
+        <artifactId>core-common</artifactId>
+        <version>0.1.0-DEVELOP-SNAPSHOT</version>
+    </parent>
+
+<!--    <modelVersion>4.0.0</modelVersion>-->
 
 
     <groupId>org.mirdar</groupId>
@@ -12,151 +19,151 @@
     <artifactId>car</artifactId>
 
 
-    <version>1.0-SNAPSHOT</version>
+    <version>0.1.0-DEVELOP-SNAPSHOT</version>
 
 
     <packaging>pom</packaging>
 
 
-    <name>car-web-starter</name>
+<!--    <name>car-web-starter</name>-->
 
 
-    <properties>
+<!--    <properties>-->
 
 
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+<!--        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>-->
 
 
-        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+<!--        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>-->
 
 
-        <java.version>1.8</java.version>
+<!--        <java.version>1.8</java.version>-->
 
 
-        <ibit.common-lang.version>1.0</ibit.common-lang.version>
+<!--        <ibit.common-lang.version>1.0</ibit.common-lang.version>-->
 
 
-        <jackson.version>2.10.1</jackson.version>
+<!--        <jackson.version>2.10.1</jackson.version>-->
 
 
-        <junit.version>4.13.1</junit.version>
+<!--        <junit.version>4.13.1</junit.version>-->
 
 
-        <springfox-swagger2.version>2.9.2</springfox-swagger2.version>
+<!--        <springfox-swagger2.version>2.9.2</springfox-swagger2.version>-->
 
 
-        <swagger-bootstrap-ui.version>1.9.6</swagger-bootstrap-ui.version>
+<!--        <swagger-bootstrap-ui.version>1.9.6</swagger-bootstrap-ui.version>-->
 
 
-    </properties>
+<!--    </properties>-->
 
 
-    <dependencies>
+<!--    <dependencies>-->
 
 
-        <dependency>
+<!--        <dependency>-->
 
 
-            <groupId>junit</groupId>
+<!--            <groupId>junit</groupId>-->
 
 
-            <artifactId>junit</artifactId>
+<!--            <artifactId>junit</artifactId>-->
 
 
-            <version>${junit.version}</version>
+<!--            <version>${junit.version}</version>-->
 
 
-            <scope>test</scope>
+<!--            <scope>test</scope>-->
 
 
-        </dependency>
+<!--        </dependency>-->
 
 
-        <!--ibit common-lang-->
+<!--        &lt;!&ndash;ibit common-lang&ndash;&gt;-->
 
 
-        <dependency>
+<!--        <dependency>-->
 
 
-            <groupId>tech.ibit</groupId>
+<!--            <groupId>tech.ibit</groupId>-->
 
 
-            <artifactId>common-lang</artifactId>
+<!--            <artifactId>common-lang</artifactId>-->
 
 
-            <version>${ibit.common-lang.version}</version>
+<!--            <version>${ibit.common-lang.version}</version>-->
 
 
-        </dependency>
+<!--        </dependency>-->
 
 
-        <!--jackson-->
+<!--        &lt;!&ndash;jackson&ndash;&gt;-->
 
 
-        <dependency>
+<!--        <dependency>-->
 
 
-            <groupId>com.fasterxml.jackson.core</groupId>
+<!--            <groupId>com.fasterxml.jackson.core</groupId>-->
 
 
-            <artifactId>jackson-core</artifactId>
+<!--            <artifactId>jackson-core</artifactId>-->
 
 
-            <version>${jackson.version}</version>
+<!--            <version>${jackson.version}</version>-->
 
 
-        </dependency>
+<!--        </dependency>-->
 
 
-        <dependency>
+<!--        <dependency>-->
 
 
-            <groupId>com.fasterxml.jackson.core</groupId>
+<!--            <groupId>com.fasterxml.jackson.core</groupId>-->
 
 
-            <artifactId>jackson-databind</artifactId>
+<!--            <artifactId>jackson-databind</artifactId>-->
 
 
-            <version>${jackson.version}</version>
+<!--            <version>${jackson.version}</version>-->
 
 
-        </dependency>
+<!--        </dependency>-->
 
 
-        <!--  swagger  -->
+<!--        &lt;!&ndash;  swagger  &ndash;&gt;-->
 
 
-        <dependency>
+<!--        <dependency>-->
 
 
-            <groupId>io.springfox</groupId>
+<!--            <groupId>io.springfox</groupId>-->
 
 
-            <artifactId>springfox-swagger2</artifactId>
+<!--            <artifactId>springfox-swagger2</artifactId>-->
 
 
-            <version>${springfox-swagger2.version}</version>
+<!--            <version>${springfox-swagger2.version}</version>-->
 
 
-        </dependency>
+<!--        </dependency>-->
 
 
-        <dependency>
+<!--        <dependency>-->
 
 
-            <groupId>com.github.xiaoymin</groupId>
+<!--            <groupId>com.github.xiaoymin</groupId>-->
 
 
-            <artifactId>swagger-bootstrap-ui</artifactId>
+<!--            <artifactId>swagger-bootstrap-ui</artifactId>-->
 
 
-            <version>${swagger-bootstrap-ui.version}</version>
+<!--            <version>${swagger-bootstrap-ui.version}</version>-->
 
 
-        </dependency>
+<!--        </dependency>-->
 
 
-    </dependencies>
+<!--    </dependencies>-->
 
 
     <modules>

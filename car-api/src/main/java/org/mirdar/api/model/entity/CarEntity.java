@@ -1,5 +1,6 @@
 package org.mirdar.api.model.entity;
 
+import com.mwga.common.database.common.BaseMasterEntity;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,12 +13,7 @@ import javax.persistence.*;
 @Table(name = "car")
 @Getter
 @Setter
-public class CarEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "Id")
-    private Long id;
-
+public class CarEntity extends BaseMasterEntity {
     @Column(nullable = false)
     private String model;
 

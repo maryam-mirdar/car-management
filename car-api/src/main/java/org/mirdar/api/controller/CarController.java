@@ -3,13 +3,15 @@ package org.mirdar.api.controller;
 import com.mwga.common.shared.util.PaginatedOut;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import org.mirdar.api.model.dto.CarFilter;
+import org.mirdar.api.model.dto.filter.CarPageableFilter;
 import org.mirdar.api.model.dto.in.CarDtoIn;
 import org.mirdar.api.model.dto.in.CarUpdateIn;
 import org.mirdar.api.model.dto.out.CarDtoOut;
+import org.mirdar.api.model.dto.out.PersonCarOut;
 import org.mirdar.api.service.CarService;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,15 +26,14 @@ public class CarController {
     private final CarService carService;
 
     @GetMapping()
-    @ResponseStatus(HttpStatus.OK)
-    public List<CarDtoOut> getAllCars(CarFilter filter) {
-        return carService.getAllCars(filter);
+    public ResponseEntity<PaginatedOut<CarDtoOut>> getAllCars(@Valid CarPageableFilter filter) {
+        return new ResponseEntity<>(carService.getAll(filter), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public CarDtoOut getCarById(@PathVariable("id") @Valid Long id) {
-        return carService.getCarById(id);
+    public ResponseEntity<CarDtoOut> getCarById(@PathVariable("id")  String id) {
+        return new ResponseEntity<>(carService.getById(id), HttpStatus.OK);
     }
 
     @PostMapping()
@@ -43,23 +44,39 @@ public class CarController {
 
     @PostMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void update(@PathVariable("id") Long id, @RequestBody CarUpdateIn carUpdateIn) {
+    public void update(@PathVariable("id") String id, @RequestBody CarUpdateIn carUpdateIn) {
         carService.update(id, carUpdateIn);
     }
 
     @PostMapping("/{id}/delete")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public String delete(@PathVariable("id") Long id) {
+    public ResponseEntity<String> delete(@PathVariable("id") String id) {
         carService.delete(id);
-        return "Deleted Successfully!";
+        return new ResponseEntity<>("Deleted Successfully!", HttpStatus.NO_CONTENT);
     }
 
     @GetMapping()
-    @ResponseStatus(HttpStatus.OK)
-    public List<CarDtoOut> fetchCarWithFilteringAndSorting(
+    public ResponseEntity<List<CarDtoOut>> fetchCarWithFilteringAndSorting(
             @RequestParam(defaultValue = "", required = false) String modelFilter,
             @RequestParam(defaultValue = "") List<String> sortList,
             @RequestParam(defaultValue = "DESC") Sort.Direction sortOrder) {
-        return carService.fetchCarDataWithFilteringAndSorting(modelFilter, sortList, sortOrder.toString());
+        return new ResponseEntity<>(carService.fetchDataWithFilteringAndSorting(modelFilter,
+                sortList,
+                sortOrder.toString()),
+                HttpStatus.OK);
+    }
+
+    @GetMapping()
+    public ResponseEntity<PaginatedOut<CarDtoOut>> fetchByFilterAndSortAndPagination(
+            CarPageableFilter filter) {
+        return new ResponseEntity<>(carService.fetchByFilterAndSortingAndPagination(filter.getSize(),
+                filter.getPage(),
+                filter.getModel()),
+                HttpStatus.OK);
+    }
+
+    @GetMapping()
+    public ResponseEntity<PaginatedOut<PersonCarOut>> fetchByModelAndOwnerName(
+              CarPageableFilter filter) {
+        return new ResponseEntity<>(carService.fetchByModelAndOwnerFirstName(filter), HttpStatus.OK);
     }
 }

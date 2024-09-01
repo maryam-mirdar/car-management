@@ -4,12 +4,15 @@ import com.mwga.common.shared.util.PaginatedOut;
 import com.mwga.storage.orm.jpa.GenericFilterableService;
 import com.mwga.storage.orm.model.SearchCondition;
 import com.mwga.storage.orm.model.SearchFilter;
+import com.mwga.storage.orm.model.SearchJoinCondition;
 import lombok.RequiredArgsConstructor;
 import org.mirdar.api.exception.CustomException;
-import org.mirdar.api.model.dto.CarFilter;
+import org.mirdar.api.model.dto.filter.CarFilter;
+import org.mirdar.api.model.dto.filter.CarPageableFilter;
 import org.mirdar.api.model.dto.in.CarDtoIn;
 import org.mirdar.api.model.dto.in.CarUpdateIn;
 import org.mirdar.api.model.dto.out.CarDtoOut;
+import org.mirdar.api.model.dto.out.PersonCarOut;
 import org.mirdar.api.model.entity.CarEntity;
 import org.mirdar.api.repository.CarRepository;
 import org.mirdar.api.util.SortUtil;
@@ -17,7 +20,9 @@ import org.mirdar.api.validation.CarLicenseValidation;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
+import javax.persistence.criteria.JoinType;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -27,55 +32,76 @@ import java.util.stream.Collectors;
 public class CarService extends GenericFilterableService<CarEntity, CarFilter> {
     private final CarRepository carRepository;
 
-    public List<CarDtoOut> getAllCars(CarFilter filter) {
-        return getAllEntities(filter, new String[]{"person"}).stream()
+    public PaginatedOut<CarDtoOut> getAll(CarFilter filter) {
+        return new PaginatedOut<>(getAllEntities(filter, new String[]{"person"})
+                .stream()
                 .map(CarDtoOut::new)
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()), countEntities(filter));
     }
 
-    public CarDtoOut getCarById(long id) {
-        CarEntity carEntity = getEntityById(id , new String[]{"person"});
-        return new CarDtoOut(carEntity);
+    public CarDtoOut getById(String id) {
+        CarEntity entity = getEntityById(id, new String[]{"person"});
+        return new CarDtoOut(entity);
     }
 
     public void save(CarDtoIn carDtoIn) {
-        CarEntity carEntity = carDtoIn.mapToEntity();
+        CarEntity entity = carDtoIn.mapToEntity();
         if (carDtoIn.getPersonId() == null) {
             throw new CustomException("A car cannot be created without an owner.", HttpStatus.BAD_REQUEST, "50262");
         }
         validateLicensePlate(carDtoIn.getLicensePlate());
         checkDuplicateLicensePlate(carDtoIn.getLicensePlate(), null);
-        createEntity(carEntity);
-       // carRepository.save(carEntity);
+        createEntity(entity);
     }
 
-    public void update(long id, CarUpdateIn carUpdateIn) {
-        CarEntity carEntity = getEntityById(id , null);
+    public void update(String id, CarUpdateIn carUpdateIn) {
+        CarEntity entity = getEntityById(id, null);
         if (carUpdateIn.getLicensePlate() != null) {
             validateLicensePlate(carUpdateIn.getLicensePlate());
-            checkDuplicateLicensePlate(carUpdateIn.getLicensePlate(), carEntity.getLicensePlate());
-            carEntity.setLicensePlate(carUpdateIn.getLicensePlate());
+            checkDuplicateLicensePlate(carUpdateIn.getLicensePlate(), entity.getLicensePlate());
+            entity.setLicensePlate(carUpdateIn.getLicensePlate());
         }
-        carEntity.setModel(Optional.ofNullable(carUpdateIn.getModel()).orElse(carEntity.getModel()));
-        carEntity.setPersonId(Optional.ofNullable(carUpdateIn.getPersonId()).orElse(carEntity.getPersonId()));
-        updateEntity(carEntity);
-       // carRepository.save(carEntity);
+        entity.setModel(Optional.ofNullable(carUpdateIn.getModel()).orElse(entity.getModel()));
+        entity.setPersonId(Optional.ofNullable(carUpdateIn.getPersonId()).orElse(entity.getPersonId()));
+        updateEntity(entity);
     }
 
-    public void delete(long id) {
-        getEntityById(id , null);
-        //carRepository.deleteById(id);
-        deleteEntityById(id);
+    public void delete(String id) {
+        deleteEntity(getEntityById(id, null));
     }
 
-    public List<CarDtoOut> fetchCarDataWithFilteringAndSorting(String modelFilter,
-                                                               List<String> sortList,
-                                                               String sortOrder) {
+    public List<CarDtoOut> fetchDataWithFilteringAndSorting(String modelFilter,
+                                                            List<String> sortList,
+                                                            String sortOrder) {
         Sort sort = Sort.by(SortUtil.createSortOrder(sortList, sortOrder));
         List<CarEntity> carEntities = carRepository.findByModelLike(modelFilter, sort);
         return carEntities.stream()
                 .map(CarDtoOut::new)
                 .collect(Collectors.toList());
+    }
+
+    public PaginatedOut<CarDtoOut> fetchByFilterAndSortingAndPagination(Integer size,
+                                                                        Integer page,
+                                                                        String model) {
+        CarPageableFilter filter = new CarPageableFilter();
+        filter.setSize(size);
+        filter.setPage(page);
+        filter.setModel(model);
+        return new PaginatedOut<>(getAllEntities(filter, null)
+                .stream()
+                .map(CarDtoOut::new)
+                .collect(Collectors.toList()), countEntities(filter));
+    }
+
+    public PaginatedOut<PersonCarOut> fetchByModelAndOwnerFirstName(CarFilter filter) {
+
+        if (!StringUtils.hasText(filter.getModel()) || !StringUtils.hasText(filter.getPersonFirstName())){
+            throw new CustomException(" ", HttpStatus.BAD_REQUEST, "50269");
+        }
+        return new PaginatedOut<>(getAllEntities(filter, new String[]{"person"})
+                .stream()
+                .map(PersonCarOut::new)
+                .collect(Collectors.toList()), countEntities(filter));
     }
 
     public void validateLicensePlate(String licensePlate) {
@@ -85,17 +111,15 @@ public class CarService extends GenericFilterableService<CarEntity, CarFilter> {
     }
 
     public void checkDuplicateLicensePlate(String newLicensePlate, String currentLicensePlate) {
-        if (!newLicensePlate.equals(currentLicensePlate) && carRepository.existsByLicensePlate(newLicensePlate)) {
+        if (!newLicensePlate.equals(currentLicensePlate) && existsByLicensePlate(newLicensePlate)) {
             throw new CustomException("Duplicate licensePlate : " + newLicensePlate, HttpStatus.BAD_REQUEST, "50264");
         }
     }
 
-    public List<CarEntity> findByPersonId(Long personId) {
-        return carRepository.findByPersonId(personId);
-    }
-
     public boolean existsByLicensePlate(String licensePlate) {
-        return carRepository.existsByLicensePlate(licensePlate);
+        CarFilter filter = new CarFilter();
+        filter.setLicensePlate(licensePlate);
+        return exist(filter);
     }
 
     @Override
@@ -109,6 +133,13 @@ public class CarService extends GenericFilterableService<CarEntity, CarFilter> {
         searchCondition.addLikeCondition("model", filter.getModel());
         searchCondition.addLikeCondition("licensePlate", filter.getLicensePlate());
         searchCondition.addEqualCondition("personId", filter.getPersonId());
+        if (StringUtils.hasText(filter.getPersonLastName()) || StringUtils.hasText(filter.getPersonFirstName())) {
+            SearchJoinCondition personJoinCondition = new SearchJoinCondition(false,
+                    JoinType.INNER, "person");
+            personJoinCondition.addLikeCondition("firstName", filter.getPersonFirstName());
+            personJoinCondition.addLikeCondition("lastName", filter.getPersonLastName());
+            searchCondition.addJoinCondition(personJoinCondition);
+        }
         searchFilter.setSearchCondition(searchCondition);
         return searchFilter;
     }

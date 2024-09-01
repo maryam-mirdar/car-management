@@ -21,7 +21,7 @@ public class CarEntity extends BaseMasterEntity {
     private String licensePlate;
 
     @Column(name = "person_id", nullable = false)
-    private Long personId;
+    private String personId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "person_id", insertable = false, updatable = false)

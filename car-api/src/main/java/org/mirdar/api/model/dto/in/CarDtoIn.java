@@ -15,7 +15,7 @@ public class CarDtoIn {
     @NotEmpty
     private String licensePlate;
     @NotNull
-    private Long personId;
+    private String personId;
 
     public CarEntity mapToEntity() {
         CarEntity carEntity = new CarEntity();

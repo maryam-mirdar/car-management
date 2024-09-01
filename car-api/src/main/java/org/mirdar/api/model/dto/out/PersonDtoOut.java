@@ -9,7 +9,7 @@ import org.mirdar.api.model.entity.PersonEntity;
 @Setter
 @AllArgsConstructor
 public class PersonDtoOut {
-    private Long id;
+    private String id;
     private String firstName;
     private String lastName;
     private String nationalCode;

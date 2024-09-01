@@ -14,5 +14,5 @@ import java.util.Optional;
 public class CarUpdateIn {
     private String model;
     private String licensePlate;
-    private Long personId;
+    private String personId;
 }

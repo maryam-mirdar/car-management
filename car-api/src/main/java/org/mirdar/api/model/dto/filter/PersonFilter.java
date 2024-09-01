@@ -1,4 +1,4 @@
-package org.mirdar.api.model.dto;
+package org.mirdar.api.model.dto.filter;
 
 import com.mwga.storage.orm.model.Filterable;
 import com.mwga.storage.orm.model.SortCriteria;

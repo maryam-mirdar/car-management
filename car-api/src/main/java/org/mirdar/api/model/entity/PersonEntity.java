@@ -21,6 +21,6 @@ public class PersonEntity extends BaseMasterEntity {
     @Column(unique = true, nullable = false)
     private String nationalCode;
 
-    @OneToMany(mappedBy = "person" , cascade = CascadeType.PERSIST , fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "person" , cascade = CascadeType.PERSIST , fetch = FetchType.LAZY, orphanRemoval = true)
     private List<CarEntity> cars;
 }
